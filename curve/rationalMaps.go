@@ -8,9 +8,9 @@ import (
 )
 
 type te2mt25519 struct {
-	E0       C.T
-	E1       C.M
-	invSqrtD GF.Elt // sqrt(-486664) such that sgn0(sqrt_neg_486664) == 1
+	E0       C.EllCurve // Twisted Edwards
+	E1       C.EllCurve // Montgomery
+	invSqrtD GF.Elt     // sqrt(-486664) such that sgn0(sqrt_neg_486664) == 1
 }
 
 // FromTe2Mt25519 returns the birational map between Edwards25519 and Curve25519 curves.
@@ -19,8 +19,8 @@ func FromTe2Mt25519() C.RationalMap {
 	e1 := Curve25519.Get()
 	F := e0.Field()
 	return te2mt25519{
-		E0:       e0.(C.T),
-		E1:       e1.(C.M),
+		E0:       e0,
+		E1:       e1,
 		invSqrtD: F.Elt("6853475219497561581579357271197624642482790079785650197046958215289687604742"),
 	}
 }
@@ -62,14 +62,12 @@ func (m te2mt25519) Pull(p C.Point) C.Point {
 }
 
 type te2mt4iso448 struct {
-	E0 C.T
-	E1 C.M
+	E0 C.EllCurve // Twisted Edwards
+	E1 C.EllCurve // Montgomery
 }
 
 // FromTe2Mt4ISO448 returns the four-degree isogeny between Edwards448 and Curve448 curves.
-func FromTe2Mt4ISO448() C.RationalMap {
-	return te2mt4iso448{Edwards448.Get().(C.T), Curve448.Get().(C.M)}
-}
+func FromTe2Mt4ISO448() C.RationalMap       { return te2mt4iso448{Edwards448.Get(), Curve448.Get()} }
 func (m te2mt4iso448) String() string       { return fmt.Sprintf("4-Isogeny from %v to\n%v", m.E0, m.E1) }
 func (m te2mt4iso448) Domain() C.EllCurve   { return m.E0 }
 func (m te2mt4iso448) Codomain() C.EllCurve { return m.E1 }
@@ -126,7 +124,7 @@ func (m te2mt4iso448) Pull(p C.Point) C.Point {
 }
 
 type isosecp256k1 struct {
-	E0, E1                 C.W
+	E0, E1                 C.EllCurve
 	xNum, xDen, yNum, yDen []GF.Elt
 }
 
@@ -136,8 +134,8 @@ func GetSECP256K1Isogeny() C.Isogeny {
 	e1 := SECP256K1.Get()
 	F := e0.Field()
 	return isosecp256k1{
-		E0: e0.(C.W),
-		E1: e1.(C.W),
+		E0: e0,
+		E1: e1,
 		xNum: []GF.Elt{
 			F.Elt("0x8e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38e38daaaaa8c7"),
 			F.Elt("0x07d3d4c80bc321d5b9f315cea7fd44c5d595d2fc0bf63b92dfff1044f17c6581"),
@@ -164,7 +162,7 @@ func (m isosecp256k1) String() string       { return fmt.Sprintf("3-Isogeny from
 func (m isosecp256k1) Domain() C.EllCurve   { return m.E0 }
 func (m isosecp256k1) Codomain() C.EllCurve { return m.E1 }
 func (m isosecp256k1) Push(p C.Point) C.Point {
-	F := m.E0.F
+	F := m.E0.Field()
 	x, y := p.X(), p.Y()
 	xNum, xDen, yNum, yDen := F.Zero(), F.Zero(), F.Zero(), F.Zero()
 	for i := 3; i >= 0; i-- {
@@ -180,7 +178,7 @@ func (m isosecp256k1) Push(p C.Point) C.Point {
 }
 
 type isobls12381G1 struct {
-	E0, E1                 C.W
+	E0, E1                 C.EllCurve
 	xNum, xDen, yNum, yDen []GF.Elt
 }
 
@@ -190,8 +188,8 @@ func GetBLS12381G1Isogeny() C.Isogeny {
 	e1 := BLS12381G1.Get()
 	F := e0.Field()
 	return isobls12381G1{
-		E0: e0.(C.W),
-		E1: e1.(C.W),
+		E0: e0,
+		E1: e1,
 		xNum: []GF.Elt{
 			F.Elt("0x11a05f2b1e833340b809101dd99815856b303e88a2d7005ff2627b56cdb4e2c85610c2d5f2e62d6eaeac1662734649b7"),
 			F.Elt("0x17294ed3e943ab2f0588bab22147a81c7c17e75b2f6a8417f565e33c70d1e86b4838f2a6f318c356e834eef1b3cb83bb"),
@@ -258,7 +256,7 @@ func (m isobls12381G1) String() string       { return fmt.Sprintf("11-Isogeny fr
 func (m isobls12381G1) Domain() C.EllCurve   { return m.E0 }
 func (m isobls12381G1) Codomain() C.EllCurve { return m.E1 }
 func (m isobls12381G1) Push(p C.Point) C.Point {
-	F := m.E0.F
+	F := m.E0.Field()
 	x, y := p.X(), p.Y()
 	xNum, xDen := F.Zero(), F.Zero()
 	for i := len(m.xNum) - 1; i >= 0; i-- {
