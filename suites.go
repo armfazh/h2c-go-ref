@@ -30,8 +30,12 @@ const (
 	P521_SHA512_SVDW_RO_           SuiteID = "P521-SHA512-SVDW-RO-"
 	Curve25519_SHA256_ELL2_NU_     SuiteID = "curve25519-SHA256-ELL2-NU-"
 	Curve25519_SHA256_ELL2_RO_     SuiteID = "curve25519-SHA256-ELL2-RO-"
+	Curve25519_SHA512_ELL2_NU_     SuiteID = "curve25519-SHA512-ELL2-NU-"
+	Curve25519_SHA512_ELL2_RO_     SuiteID = "curve25519-SHA512-ELL2-RO-"
 	Edwards25519_SHA256_EDELL2_NU_ SuiteID = "edwards25519-SHA256-EDELL2-NU-"
 	Edwards25519_SHA256_EDELL2_RO_ SuiteID = "edwards25519-SHA256-EDELL2-RO-"
+	Edwards25519_SHA512_EDELL2_NU_ SuiteID = "edwards25519-SHA512-EDELL2-NU-"
+	Edwards25519_SHA512_EDELL2_RO_ SuiteID = "edwards25519-SHA512-EDELL2-RO-"
 	Curve448_SHA512_ELL2_NU_       SuiteID = "curve448-SHA512-ELL2-NU-"
 	Curve448_SHA512_ELL2_RO_       SuiteID = "curve448-SHA512-ELL2-RO-"
 	Edwards448_SHA512_EDELL2_NU_   SuiteID = "edwards448-SHA512-EDELL2-NU-"
@@ -100,8 +104,12 @@ func init() {
 	P521_SHA512_SVDW_RO_.register(&params{E: C.P521, H: sha512, Map: M.SVDW, Sgn0: GF.SignLE, L: 96, RO: true})
 	Curve25519_SHA256_ELL2_NU_.register(&params{E: C.Curve25519, H: sha256, Map: M.ELL2, Sgn0: GF.SignLE, L: 48, RO: false})
 	Curve25519_SHA256_ELL2_RO_.register(&params{E: C.Curve25519, H: sha256, Map: M.ELL2, Sgn0: GF.SignLE, L: 48, RO: true})
+	Curve25519_SHA512_ELL2_NU_.register(&params{E: C.Curve25519, H: sha512, Map: M.ELL2, Sgn0: GF.SignLE, L: 48, RO: false})
+	Curve25519_SHA512_ELL2_RO_.register(&params{E: C.Curve25519, H: sha512, Map: M.ELL2, Sgn0: GF.SignLE, L: 48, RO: true})
 	Edwards25519_SHA256_EDELL2_NU_.register(&params{E: C.Edwards25519, H: sha256, Map: M.EDELL2, Sgn0: GF.SignLE, L: 48, RO: false})
 	Edwards25519_SHA256_EDELL2_RO_.register(&params{E: C.Edwards25519, H: sha256, Map: M.EDELL2, Sgn0: GF.SignLE, L: 48, RO: true})
+	Edwards25519_SHA512_EDELL2_NU_.register(&params{E: C.Edwards25519, H: sha512, Map: M.EDELL2, Sgn0: GF.SignLE, L: 48, RO: false})
+	Edwards25519_SHA512_EDELL2_RO_.register(&params{E: C.Edwards25519, H: sha512, Map: M.EDELL2, Sgn0: GF.SignLE, L: 48, RO: true})
 	Curve448_SHA512_ELL2_NU_.register(&params{E: C.Curve448, H: sha512, Map: M.ELL2, Sgn0: GF.SignLE, L: 84, RO: false})
 	Curve448_SHA512_ELL2_RO_.register(&params{E: C.Curve448, H: sha512, Map: M.ELL2, Sgn0: GF.SignLE, L: 84, RO: true})
 	Edwards448_SHA512_EDELL2_NU_.register(&params{E: C.Edwards448, H: sha512, Map: M.EDELL2, Sgn0: GF.SignLE, L: 84, RO: false})
