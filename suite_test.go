@@ -14,11 +14,15 @@ type vectorSuite struct {
 	SuiteID   string `json:"ciphersuite"`
 	CurveName string `json:"curve"`
 	DST       string `json:"dst"`
+	L         string `json:"L"`
+	Z         string `json:"Z"`
+	Expand    string `json:"expand"`
 	Field     struct {
 		M string `json:"m"`
 		P string `json:"p"`
 	} `json:"field"`
 	Hash string `json:"hash"`
+	K    string `json:"k"`
 	Map  struct {
 		Name string `json:"name"`
 		Sgn0 string `json:"sgn0"`
@@ -29,7 +33,20 @@ type vectorSuite struct {
 			X string `json:"x"`
 			Y string `json:"y"`
 		} `json:"P"`
-		Msg string `json:"msg"`
+		Q0 struct {
+			X string `json:"x"`
+			Y string `json:"y"`
+		} `json:"Q0"`
+		Q1 struct {
+			X string `json:"x"`
+			Y string `json:"y"`
+		} `json:"Q1"`
+		Q struct {
+			X string `json:"x"`
+			Y string `json:"y"`
+		} `json:"Q"`
+		Msg string   `json:"msg"`
+		U   []string `json:"u"`
 	} `json:"vectors"`
 }
 
