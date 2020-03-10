@@ -51,14 +51,14 @@ type vectorSuite struct {
 }
 
 func (v vectorSuite) test(t *testing.T) {
-	hashToCurve, err := h2c.SuiteID(v.SuiteID).Get()
+	hashToCurve, err := h2c.SuiteID(v.SuiteID).Get([]byte(v.DST))
 	if err != nil {
 		t.Skipf(err.Error())
 	}
 	E := hashToCurve.GetCurve()
 	F := E.Field()
 	for i := range v.Vectors {
-		got := hashToCurve.Hash([]byte(v.Vectors[i].Msg), []byte(v.DST))
+		got := hashToCurve.Hash([]byte(v.Vectors[i].Msg))
 		want := E.NewPoint(
 			F.Elt(v.Vectors[i].P.X),
 			F.Elt(v.Vectors[i].P.Y),
@@ -104,15 +104,16 @@ func BenchmarkSuites(b *testing.B) {
 	msg := make([]byte, 256)
 	dst := make([]byte, 10)
 	for _, suite := range []h2c.SuiteID{
-		h2c.P256_SHA256_SSWU_NU_,
-		h2c.P256_SHA256_SSWU_RO_,
-		h2c.P256_SHA256_SVDW_NU_,
-		h2c.P256_SHA256_SVDW_RO_,
+		h2c.P256_XMDSHA256_SSWU_RO_,
+		h2c.Curve25519_XMDSHA256_ELL2_RO_,
+		h2c.Curve448_XMDSHA512_ELL2_RO_,
 	} {
 		b.Run(string(suite), func(b *testing.B) {
-			hashToCurve, _ := suite.Get()
+			b.SetBytes(int64(len(msg)))
+			hashToCurve, _ := suite.Get(dst)
+			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
-				hashToCurve.Hash(msg, dst)
+				hashToCurve.Hash(msg)
 			}
 		})
 	}
