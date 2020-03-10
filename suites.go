@@ -58,7 +58,7 @@ func (id SuiteID) Get() (HashToPoint, error) {
 		H := s.H.New
 		Z := E.Field().Elt(s.Z)
 		m := s.Map.Get(E, Z, s.Sgn0, s.Iso)
-		e := &encoding{E, H, s.L, m, s.RO}
+		e := &encoding{E, H, s.L, m, s.RO, XMD}
 		if s.RO {
 			return &hashToCurve{e}, nil
 		}
