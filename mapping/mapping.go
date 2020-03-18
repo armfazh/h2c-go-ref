@@ -32,26 +32,33 @@ const (
 	BF ID = iota
 	// SSWU is the Simplified SWU method.
 	SSWU
-	// ELL2 is Elligator2 method for Montgomery curves.
+	// ELL2 is Elligator2 method.
 	ELL2
-	// EDELL2 is Elligator2 method for twisted Edwards curves.
-	EDELL2
 	// SVDW is Shallue-van de Woestijne method.
 	SVDW
 )
 
+// MapDescriptor describes parameters of a mapping to curve.
+type MapDescriptor struct {
+	ID   ID
+	Z    int
+	Sgn0 GF.Sgn0ID
+	Iso  func() C.Isogeny
+}
+
 // Get returns a MapToCurve implementation based on ID provided. Some arguments
 // can be set to nil if there are not required by the mapping.
-func (id ID) Get(e C.EllCurve, z GF.Elt, sgn0 GF.Sgn0ID, iso func() C.Isogeny) MapToCurve {
-	switch id {
+func (d MapDescriptor) Get(e C.EllCurve) MapToCurve {
+	switch d.ID {
 	case BF:
 		return NewBF(e)
 	case SSWU:
-		return NewSSWU(e, z, sgn0, iso)
+		z := e.Field().Elt(d.Z)
+		return NewSSWU(e, z, d.Sgn0, d.Iso)
 	case SVDW:
-		return NewSVDW(e, sgn0)
-	case ELL2, EDELL2:
-		return NewElligator2(e, sgn0)
+		return NewSVDW(e, d.Sgn0)
+	case ELL2:
+		return NewElligator2(e, d.Sgn0)
 	default:
 		panic("Mapping not supported")
 	}

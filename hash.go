@@ -1,12 +1,9 @@
 package h2c
 
 import (
-	"crypto"
-	"io"
 	"math/big"
 
 	M "github.com/armfazh/h2c-go-ref/mapping"
-	"github.com/armfazh/h2c-go-ref/xof"
 	C "github.com/armfazh/tozan-ecc/curve"
 	GF "github.com/armfazh/tozan-ecc/field"
 )
@@ -23,13 +20,10 @@ type HashToPoint interface {
 }
 
 type encoding struct {
-	DST           []byte
-	E             C.EllCurve
-	expandMessage func([]byte, uint) []byte
-	expanderID    uint
-	L             uint
-	Mapping       M.MapToCurve
-	RandomOracle  bool
+	E       C.EllCurve
+	Exp     Expander
+	Mapping M.MapToCurve
+	L       uint
 }
 
 // hashToField is a function that hashes a string msg of any length into an
@@ -42,7 +36,7 @@ func (e *encoding) hashToField(
 	m := F.Ext()
 	length := count * m * e.L
 
-	pseudo := e.expandMessage(msg, length)
+	pseudo := e.Exp.Expand(msg, length)
 	u := make([]GF.Elt, count)
 	v := make([]interface{}, m)
 	var vj big.Int
@@ -59,75 +53,11 @@ func (e *encoding) hashToField(
 	return u
 }
 
-func (e *encoding) expandMessageXOF(msg []byte, n uint) []byte {
-	dstPrime := []byte{byte(len(e.DST))}
-	bLen := []byte{0, 0}
-	bLen[0] = byte((n >> 8) & 0xFF)
-	bLen[1] = byte(n & 0xFF)
-	pseudo := make([]byte, n)
-
-	H := xof.XofID(e.expanderID).New()
-	_, _ = H.Write(msg)
-	_, _ = H.Write(bLen)
-	_, _ = H.Write(dstPrime)
-	_, err := io.ReadFull(H, pseudo)
-	if err != nil {
-		panic(err)
-	}
-	return pseudo
-}
-
-func (e *encoding) expandMessageXMD(msg []byte, n uint) []byte {
-	H := crypto.Hash(e.expanderID).New()
-	bLen := uint(H.Size())
-	ell := (n + (bLen - 1)) / bLen
-	if ell > 255 {
-		panic("too big")
-	}
-	dstPrime := []byte{byte(len(e.DST))}
-	dstPrime = append(dstPrime, e.DST...)
-	zPad := make([]byte, H.BlockSize())
-	libStr := []byte{0, 0}
-	libStr[0] = byte((n >> 8) & 0xFF)
-	libStr[1] = byte(n & 0xFF)
-
-	H.Reset()
-	_, _ = H.Write(zPad)
-	_, _ = H.Write(msg)
-	_, _ = H.Write(libStr)
-	_, _ = H.Write([]byte{0})
-	_, _ = H.Write(dstPrime)
-	b0 := H.Sum(nil)
-
-	H.Reset()
-	_, _ = H.Write(b0)
-	_, _ = H.Write([]byte{1})
-	_, _ = H.Write(dstPrime)
-	bi := H.Sum(nil)
-	pseudo := append([]byte{}, bi...)
-	for i := uint(2); i <= ell; i++ {
-		H.Reset()
-		_, _ = H.Write(xor(bi, b0))
-		_, _ = H.Write([]byte{byte(i)})
-		_, _ = H.Write(dstPrime)
-		bi = H.Sum(nil)
-		pseudo = append(pseudo, bi...)
-	}
-	return pseudo[0:n]
-}
-
-func xor(x, y []byte) []byte {
-	for i := range x {
-		x[i] ^= y[i]
-	}
-	return x
-}
-
 func (e *encoding) GetCurve() C.EllCurve { return e.E }
-func (e *encoding) IsRandomOracle() bool { return e.RandomOracle }
 
 type encodeToCurve struct{ *encoding }
 
+func (s *encodeToCurve) IsRandomOracle() bool { return false }
 func (s *encodeToCurve) Hash(in []byte) C.Point {
 	u := s.hashToField(in, 1)
 	Q := s.Mapping.Map(u[0])
@@ -137,6 +67,7 @@ func (s *encodeToCurve) Hash(in []byte) C.Point {
 
 type hashToCurve struct{ *encoding }
 
+func (s *hashToCurve) IsRandomOracle() bool { return true }
 func (s *hashToCurve) Hash(in []byte) C.Point {
 	u := s.hashToField(in, 2)
 	Q0 := s.Mapping.Map(u[0])
