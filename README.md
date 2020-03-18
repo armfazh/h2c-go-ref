@@ -1,4 +1,8 @@
-## Hashing to Elliptic Curves
+# Hashing to Elliptic Curves
+
+![Go](https://github.com/armfazh/h2c-go-ref/workflows/Go/badge.svg)
+
+---
 
 **IETF Data Tracker**: [draft-irtf-cfrg-hash-to-curve](https://datatracker.ietf.org/doc/draft-irtf-cfrg-hash-to-curve)
 
@@ -10,10 +14,22 @@ This document specifies a number of algorithms that may be used to encode or has
 
 The purpose of this implementation is for generating test vectors and enabling cross compatibility with other implementations.
 
-This implementation is for reference only. It MUST NOT be used in production systems.
+This implementation is for reference only. It **MUST NOT** be used in production systems.
 
-#### Other implementations
- - [Sage](https://github.com/cfrg/draft-irtf-cfrg-hash-to-curve/tree/master/poc)
+#### Development branch: [master](https://github.com/armfazh/h2c-go-ref/tree/master)
+
+#### Draft versions implemented:
+ -   [v06](https://github.com/armfazh/h2c-go-ref/tree/6.0.0) (latest)
+ -   [v05](https://github.com/armfazh/h2c-go-ref/tree/5.0.0)
+
+#### Compatible Implementations
+ -   [Sage](https://github.com/cfrg/draft-irtf-cfrg-hash-to-curve/tree/master/poc)
+ -   [rust](https://github.com/armfazh/h2c-rust-ref)
+
+
+### Internals
+
+![hash to curve](https://github.com/cfrg/draft-irtf-cfrg-hash-to-curve/blob/master/drawings/diag.png)
 
 ### Contact
 
