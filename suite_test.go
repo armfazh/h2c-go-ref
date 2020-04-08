@@ -25,7 +25,6 @@ type vectorSuite struct {
 	K    string `json:"k"`
 	Map  struct {
 		Name string `json:"name"`
-		Sgn0 string `json:"sgn0"`
 	} `json:"map"`
 	RandomOracle bool `json:"randomOracle"`
 	Vectors      []struct {

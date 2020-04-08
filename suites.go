@@ -120,8 +120,8 @@ func init() {
 	Secp256k1_XMDSHA256_SSWU_RO_.register(&params{E: C.SECP256K1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Sgn0: GF.SignLE, Z: -11, Iso: C.GetSECP256K1Isogeny}, L: 48, RO: true})
 	Secp256k1_XMDSHA256_SVDW_NU_.register(&params{E: C.SECP256K1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SVDW, Sgn0: GF.SignLE, Z: 1}, L: 48, RO: false})
 	Secp256k1_XMDSHA256_SVDW_RO_.register(&params{E: C.SECP256K1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SVDW, Sgn0: GF.SignLE, Z: 1}, L: 48, RO: true})
-	BLS12381G1_XMDSHA256_SSWU_NU_.register(&params{E: C.BLS12381G1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Sgn0: GF.SignBE, Z: 11, Iso: C.GetBLS12381G1Isogeny}, L: 64, RO: false})
-	BLS12381G1_XMDSHA256_SSWU_RO_.register(&params{E: C.BLS12381G1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Sgn0: GF.SignBE, Z: 11, Iso: C.GetBLS12381G1Isogeny}, L: 64, RO: true})
-	BLS12381G1_XMDSHA256_SVDW_NU_.register(&params{E: C.BLS12381G1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SVDW, Sgn0: GF.SignBE, Z: -3}, L: 64, RO: false})
-	BLS12381G1_XMDSHA256_SVDW_RO_.register(&params{E: C.BLS12381G1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SVDW, Sgn0: GF.SignBE, Z: -3}, L: 64, RO: true})
+	BLS12381G1_XMDSHA256_SSWU_NU_.register(&params{E: C.BLS12381G1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Sgn0: GF.SignLE, Z: 11, Iso: C.GetBLS12381G1Isogeny}, L: 64, RO: false})
+	BLS12381G1_XMDSHA256_SSWU_RO_.register(&params{E: C.BLS12381G1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Sgn0: GF.SignLE, Z: 11, Iso: C.GetBLS12381G1Isogeny}, L: 64, RO: true})
+	BLS12381G1_XMDSHA256_SVDW_NU_.register(&params{E: C.BLS12381G1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SVDW, Sgn0: GF.SignLE, Z: -3}, L: 64, RO: false})
+	BLS12381G1_XMDSHA256_SVDW_RO_.register(&params{E: C.BLS12381G1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SVDW, Sgn0: GF.SignLE, Z: -3}, L: 64, RO: true})
 }
