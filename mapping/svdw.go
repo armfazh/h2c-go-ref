@@ -17,9 +17,9 @@ type svdw struct {
 func (m svdw) String() string { return fmt.Sprintf("SVDW for E: %v", m.E) }
 
 // NewSVDW implements the Shallue-van de Woestijne method.
-func NewSVDW(e C.EllCurve, sgn0 GF.Sgn0ID) MapToCurve {
+func NewSVDW(e C.EllCurve) MapToCurve {
 	curve := e.(C.W)
-	s := &svdw{E: curve, Sgn0: curve.F.GetSgn0(sgn0)}
+	s := &svdw{E: curve, Sgn0: curve.F.GetSgn0(GF.SignLE)}
 	s.precmp()
 	return s
 }

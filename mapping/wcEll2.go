@@ -15,10 +15,10 @@ type wcEll2 struct {
 
 func (m wcEll2) String() string { return fmt.Sprintf("Elligator2 for E: %v", m.E) }
 
-func newWCEll2(e C.WC, sgn0 GF.Sgn0ID) MapToCurve {
+func newWCEll2(e C.WC) MapToCurve {
 	F := e.F
 	if !F.IsZero(e.A) && !F.IsZero(e.B) { // A != 0 and  B != 0
-		return &wcEll2{e, findZ(F), F.GetSgn0(sgn0)}
+		return &wcEll2{e, findZ(F), F.GetSgn0(GF.SignLE)}
 	}
 	panic("Curve didn't match elligator2 mapping")
 }

@@ -15,7 +15,7 @@ type wA0ell2 struct {
 
 func (m wA0ell2) String() string { return fmt.Sprintf("Elligator2A0 for E: %v", m.E) }
 
-func newWA0Ell2(e C.W, sgn0 GF.Sgn0ID) MapToCurve {
+func newWA0Ell2(e C.W) MapToCurve {
 	F := e.F
 	q := F.Order()
 	precond1 := q.Mod(q, big.NewInt(4)).Int64() == int64(3) // q == 3 (mod 4)
@@ -23,7 +23,7 @@ func newWA0Ell2(e C.W, sgn0 GF.Sgn0ID) MapToCurve {
 	precond3 := F.IsZero(e.B)                               // B == 0
 
 	if precond1 && precond2 && precond3 {
-		return &wA0ell2{e, F.GetSgn0(sgn0)}
+		return &wA0ell2{e, F.GetSgn0(GF.SignLE)}
 	}
 	panic("Curve didn't match elligator2 mapping")
 }

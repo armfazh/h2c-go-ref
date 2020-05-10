@@ -15,9 +15,9 @@ type mtEll2 struct {
 
 func (m mtEll2) String() string { return fmt.Sprintf("Montgomery Elligator2 for E: %v", m.E) }
 
-func newMTEll2(e C.M, sgn0 GF.Sgn0ID) MapToCurve {
+func newMTEll2(e C.M) MapToCurve {
 	rat := e.ToWeierstrassC()
-	return &mtEll2{e, rat, newWCEll2(rat.Codomain().(C.WC), sgn0)}
+	return &mtEll2{e, rat, newWCEll2(rat.Codomain().(C.WC))}
 }
 
 func (m *mtEll2) Map(u GF.Elt) C.Point { return m.Pull(m.MapToCurve.Map(u)) }

@@ -6,7 +6,6 @@ import (
 	"github.com/armfazh/h2c-go-ref/mapping"
 	C "github.com/armfazh/tozan-ecc/curve"
 	"github.com/armfazh/tozan-ecc/curve/toy"
-	GF "github.com/armfazh/tozan-ecc/field"
 )
 
 func TestBF(t *testing.T) {
@@ -32,16 +31,12 @@ func TestEll2(t *testing.T) {
 		E, _, _ := id.New()
 		F := E.Field()
 		n := F.Order().Int64()
-		for _, m := range []mapping.MapToCurve{
-			mapping.NewElligator2(E, GF.SignLE),
-			mapping.NewElligator2(E, GF.SignBE),
-		} {
-			for i := int64(0); i < n; i++ {
-				u := F.Elt(i)
-				P := m.Map(u)
-				if !E.IsOnCurve(P) {
-					t.Fatalf("u: %v got P: %v\n", u, P)
-				}
+		m := mapping.NewElligator2(E)
+		for i := int64(0); i < n; i++ {
+			u := F.Elt(i)
+			P := m.Map(u)
+			if !E.IsOnCurve(P) {
+				t.Fatalf("u: %v got P: %v\n", u, P)
 			}
 		}
 	}
@@ -53,18 +48,15 @@ func TestSVDW(t *testing.T) {
 		E, _, _ := id.New()
 		F := E.Field()
 		n := F.Order().Int64()
-		for _, m := range []mapping.MapToCurve{
-			mapping.NewSVDW(E, GF.SignLE),
-			mapping.NewSVDW(E, GF.SignBE),
-		} {
-			for i := int64(0); i < n; i++ {
-				u := F.Elt(i)
-				P := m.Map(u)
-				if !E.IsOnCurve(P) {
-					t.Fatalf("%vu: %v\nP: %v not on curve.", m, u, P)
-				}
+		m := mapping.NewElligator2(E)
+		for i := int64(0); i < n; i++ {
+			u := F.Elt(i)
+			P := m.Map(u)
+			if !E.IsOnCurve(P) {
+				t.Fatalf("%vu: %v\nP: %v not on curve.", m, u, P)
 			}
 		}
+
 	}
 }
 
@@ -83,10 +75,8 @@ func TestSSWU(t *testing.T) {
 		iso := func() C.Isogeny { return doubleIso{E} }
 		Z := F.Elt(c.Z)
 		for _, m := range []mapping.MapToCurve{
-			mapping.NewSSWU(E, Z, GF.SignLE, nil),
-			mapping.NewSSWU(E, Z, GF.SignBE, nil),
-			mapping.NewSSWU(E, Z, GF.SignLE, iso),
-			mapping.NewSSWU(E, Z, GF.SignBE, iso),
+			mapping.NewSSWU(E, Z, nil),
+			mapping.NewSSWU(E, Z, iso),
 		} {
 			for i := int64(0); i < n; i++ {
 				u := F.Elt(i)

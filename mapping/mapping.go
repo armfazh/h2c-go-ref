@@ -40,10 +40,9 @@ const (
 
 // MapDescriptor describes parameters of a mapping to curve.
 type MapDescriptor struct {
-	ID   ID
-	Z    int
-	Sgn0 GF.Sgn0ID
-	Iso  func() C.Isogeny
+	ID  ID
+	Z   int
+	Iso func() C.Isogeny
 }
 
 // Get returns a MapToCurve implementation based on ID provided. Some arguments
@@ -54,11 +53,11 @@ func (d MapDescriptor) Get(e C.EllCurve) MapToCurve {
 		return NewBF(e)
 	case SSWU:
 		z := e.Field().Elt(d.Z)
-		return NewSSWU(e, z, d.Sgn0, d.Iso)
+		return NewSSWU(e, z, d.Iso)
 	case SVDW:
-		return NewSVDW(e, d.Sgn0)
+		return NewSVDW(e)
 	case ELL2:
-		return NewElligator2(e, d.Sgn0)
+		return NewElligator2(e)
 	default:
 		panic("Mapping not supported")
 	}
