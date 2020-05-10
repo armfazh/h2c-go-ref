@@ -48,7 +48,7 @@ func TestSVDW(t *testing.T) {
 		E, _, _ := id.New()
 		F := E.Field()
 		n := F.Order().Int64()
-		m := mapping.NewElligator2(E)
+		m := mapping.NewSVDW(E)
 		for i := int64(0); i < n; i++ {
 			u := F.Elt(i)
 			P := m.Map(u)
