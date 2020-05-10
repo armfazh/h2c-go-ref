@@ -55,7 +55,10 @@ func (id SuiteID) Get(dst []byte) (HashToPoint, error) {
 	if s, ok := supportedSuitesID[id]; ok {
 		E := s.E.Get()
 		m := s.Map.Get(E)
-		exp := s.Exp.Get(dst, s.K)
+		exp, err := s.Exp.Get(dst, s.K)
+		if err != nil {
+			return nil, err
+		}
 		e := &encoding{
 			E:       E,
 			Exp:     exp,

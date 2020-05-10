@@ -2,6 +2,7 @@ package h2c
 
 import (
 	"crypto"
+	"errors"
 	"io"
 
 	"github.com/armfazh/h2c-go-ref/xof"
@@ -31,22 +32,21 @@ type ExpanderDesc struct {
 }
 
 // Get returns an XOF-based expander.
-func (d ExpanderDesc) Get(dst []byte, k uint) Expander {
-	var e Expander
-	if d.ty == XMD {
+func (d ExpanderDesc) Get(dst []byte, k uint) (e Expander, err error) {
+	switch d.ty {
+	case XMD:
 		e = &expanderXMD{dst, crypto.Hash(d.id)}
-	} else if d.ty == XOF {
+	case XOF:
 		e = &expanderXOF{dst, xof.XofID(d.id), k}
-	} else {
-		panic("Not implemented")
+	default:
+		return nil, errors.New("expander not supported")
 	}
-	e.shortenDST()
-	return e
+	return e, e.constructDSTPrime()
 }
 
 // Expander allows to generate a pseudo-random byte string of a determined length.
 type Expander interface {
-	shortenDST()
+	constructDSTPrime() error
 	Expand(in []byte, len uint) (pseudo []byte)
 }
 
@@ -56,21 +56,19 @@ type expanderXOF struct {
 	k   uint
 }
 
-func (e *expanderXOF) shortenDST() {
+func (e *expanderXOF) constructDSTPrime() (err error) {
 	if len(e.dst) > MaxDSTLength {
 		H := e.id.New()
 		_, _ = H.Write(_LongDSTPrefix[:])
 		_, _ = H.Write(e.dst)
 		e.dst = make([]byte, ((2*e.k)+7)/8)
-		_, err := io.ReadFull(H, e.dst)
-		if err != nil {
-			panic(err)
-		}
+		_, err = io.ReadFull(H, e.dst)
 	}
+	e.dst = append(e.dst, byte(len(e.dst)))
+	return err
 }
 
 func (e *expanderXOF) Expand(msg []byte, n uint) []byte {
-	dstPrime := []byte{byte(len(e.dst))}
 	bLen := []byte{0, 0}
 	bLen[0] = byte((n >> 8) & 0xFF)
 	bLen[1] = byte(n & 0xFF)
@@ -79,7 +77,7 @@ func (e *expanderXOF) Expand(msg []byte, n uint) []byte {
 	H := e.id.New()
 	_, _ = H.Write(msg)
 	_, _ = H.Write(bLen)
-	_, _ = H.Write(dstPrime)
+	_, _ = H.Write(e.dst)
 	_, err := io.ReadFull(H, pseudo)
 	if err != nil {
 		panic(err)
@@ -92,13 +90,15 @@ type expanderXMD struct {
 	id  crypto.Hash
 }
 
-func (e *expanderXMD) shortenDST() {
+func (e *expanderXMD) constructDSTPrime() error {
 	if len(e.dst) > MaxDSTLength {
 		H := e.id.New()
 		_, _ = H.Write(_LongDSTPrefix[:])
 		_, _ = H.Write(e.dst)
 		e.dst = H.Sum(nil)
 	}
+	e.dst = append(e.dst, byte(len(e.dst)))
+	return nil
 }
 
 func (e *expanderXMD) Expand(msg []byte, n uint) []byte {
@@ -108,8 +108,7 @@ func (e *expanderXMD) Expand(msg []byte, n uint) []byte {
 	if ell > 255 {
 		panic("too big")
 	}
-	dstPrime := []byte{byte(len(e.dst))}
-	dstPrime = append(dstPrime, e.dst...)
+
 	zPad := make([]byte, H.BlockSize())
 	libStr := []byte{0, 0}
 	libStr[0] = byte((n >> 8) & 0xFF)
@@ -120,20 +119,20 @@ func (e *expanderXMD) Expand(msg []byte, n uint) []byte {
 	_, _ = H.Write(msg)
 	_, _ = H.Write(libStr)
 	_, _ = H.Write([]byte{0})
-	_, _ = H.Write(dstPrime)
+	_, _ = H.Write(e.dst)
 	b0 := H.Sum(nil)
 
 	H.Reset()
 	_, _ = H.Write(b0)
 	_, _ = H.Write([]byte{1})
-	_, _ = H.Write(dstPrime)
+	_, _ = H.Write(e.dst)
 	bi := H.Sum(nil)
 	pseudo := append([]byte{}, bi...)
 	for i := uint(2); i <= ell; i++ {
 		H.Reset()
 		_, _ = H.Write(xor(bi, b0))
 		_, _ = H.Write([]byte{byte(i)})
-		_, _ = H.Write(dstPrime)
+		_, _ = H.Write(e.dst)
 		bi = H.Sum(nil)
 		pseudo = append(pseudo, bi...)
 	}
