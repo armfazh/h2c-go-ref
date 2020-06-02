@@ -69,7 +69,7 @@ func (v vectorSuite) test(t *testing.T) {
 }
 
 func TestVectors(t *testing.T) {
-	if errFolder := filepath.Walk("testdata",
+	if errFolder := filepath.Walk("testdata/suites",
 		func(path string, info os.FileInfo, err error) error {
 			if err != nil {
 				return err

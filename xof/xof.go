@@ -30,14 +30,10 @@ type XOFFunc func() XOF
 
 type XofID uint
 
-const (
-	maxXofID = 4
-)
-
 func (x XofID) Available() bool  { return x < maxXofID && xofRegistry[x] != nil }
 func (x XofID) XofIDFunc() XofID { return x }
 func (x XofID) New() XOF {
-	if x > 0 && x < maxXofID {
+	if x < maxXofID {
 		f := xofRegistry[x]
 		if f != nil {
 			return f()
@@ -45,6 +41,7 @@ func (x XofID) New() XOF {
 	}
 	panic("crypto: requested XOF function #" + strconv.Itoa(int(x)) + " is unavailable")
 }
+
 func RegisterXOF(x XofID, f func() XOF) {
 	if x >= maxXofID {
 		panic("crypto: RegisterXOF of unknown XOF function")
@@ -60,6 +57,8 @@ func init() {
 	RegisterXOF(BLAKE2XB, newBlake2xb)
 	RegisterXOF(BLAKE2XS, newBlake2xs)
 }
+
+const maxXofID = 4
 
 const (
 	SHAKE128 XofID = iota
