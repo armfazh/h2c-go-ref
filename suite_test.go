@@ -104,7 +104,7 @@ func BenchmarkSuites(b *testing.B) {
 	dst := make([]byte, 10)
 	for _, suite := range []h2c.SuiteID{
 		h2c.P256_XMDSHA256_SSWU_RO_,
-		h2c.Curve25519_XMDSHA256_ELL2_RO_,
+		h2c.Curve25519_XMDSHA512_ELL2_RO_,
 		h2c.Curve448_XMDSHA512_ELL2_RO_,
 	} {
 		b.Run(string(suite), func(b *testing.B) {

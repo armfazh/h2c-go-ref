@@ -16,22 +16,12 @@ type SuiteID string
 const (
 	P256_XMDSHA256_SSWU_NU_         SuiteID = "P256_XMD:SHA-256_SSWU_NU_"
 	P256_XMDSHA256_SSWU_RO_         SuiteID = "P256_XMD:SHA-256_SSWU_RO_"
-	P256_XMDSHA256_SVDW_NU_         SuiteID = "P256_XMD:SHA-256_SVDW_NU_"
-	P256_XMDSHA256_SVDW_RO_         SuiteID = "P256_XMD:SHA-256_SVDW_RO_"
 	P384_XMDSHA512_SSWU_NU_         SuiteID = "P384_XMD:SHA-512_SSWU_NU_"
 	P384_XMDSHA512_SSWU_RO_         SuiteID = "P384_XMD:SHA-512_SSWU_RO_"
-	P384_XMDSHA512_SVDW_NU_         SuiteID = "P384_XMD:SHA-512_SVDW_NU_"
-	P384_XMDSHA512_SVDW_RO_         SuiteID = "P384_XMD:SHA-512_SVDW_RO_"
 	P521_XMDSHA512_SSWU_NU_         SuiteID = "P521_XMD:SHA-512_SSWU_NU_"
 	P521_XMDSHA512_SSWU_RO_         SuiteID = "P521_XMD:SHA-512_SSWU_RO_"
-	P521_XMDSHA512_SVDW_NU_         SuiteID = "P521_XMD:SHA-512_SVDW_NU_"
-	P521_XMDSHA512_SVDW_RO_         SuiteID = "P521_XMD:SHA-512_SVDW_RO_"
-	Curve25519_XMDSHA256_ELL2_NU_   SuiteID = "curve25519_XMD:SHA-256_ELL2_NU_"
-	Curve25519_XMDSHA256_ELL2_RO_   SuiteID = "curve25519_XMD:SHA-256_ELL2_RO_"
 	Curve25519_XMDSHA512_ELL2_NU_   SuiteID = "curve25519_XMD:SHA-512_ELL2_NU_"
 	Curve25519_XMDSHA512_ELL2_RO_   SuiteID = "curve25519_XMD:SHA-512_ELL2_RO_"
-	Edwards25519_XMDSHA256_ELL2_NU_ SuiteID = "edwards25519_XMD:SHA-256_ELL2_NU_"
-	Edwards25519_XMDSHA256_ELL2_RO_ SuiteID = "edwards25519_XMD:SHA-256_ELL2_RO_"
 	Edwards25519_XMDSHA512_ELL2_NU_ SuiteID = "edwards25519_XMD:SHA-512_ELL2_NU_"
 	Edwards25519_XMDSHA512_ELL2_RO_ SuiteID = "edwards25519_XMD:SHA-512_ELL2_RO_"
 	Curve448_XMDSHA512_ELL2_NU_     SuiteID = "curve448_XMD:SHA-512_ELL2_NU_"
@@ -40,12 +30,10 @@ const (
 	Edwards448_XMDSHA512_ELL2_RO_   SuiteID = "edwards448_XMD:SHA-512_ELL2_RO_"
 	Secp256k1_XMDSHA256_SSWU_NU_    SuiteID = "secp256k1_XMD:SHA-256_SSWU_NU_"
 	Secp256k1_XMDSHA256_SSWU_RO_    SuiteID = "secp256k1_XMD:SHA-256_SSWU_RO_"
-	Secp256k1_XMDSHA256_SVDW_NU_    SuiteID = "secp256k1_XMD:SHA-256_SVDW_NU_"
-	Secp256k1_XMDSHA256_SVDW_RO_    SuiteID = "secp256k1_XMD:SHA-256_SVDW_RO_"
 	BLS12381G1_XMDSHA256_SSWU_NU_   SuiteID = "BLS12381G1_XMD:SHA-256_SSWU_NU_"
 	BLS12381G1_XMDSHA256_SSWU_RO_   SuiteID = "BLS12381G1_XMD:SHA-256_SSWU_RO_"
-	BLS12381G1_XMDSHA256_SVDW_NU_   SuiteID = "BLS12381G1_XMD:SHA-256_SVDW_NU_"
-	BLS12381G1_XMDSHA256_SVDW_RO_   SuiteID = "BLS12381G1_XMD:SHA-256_SVDW_RO_"
+	BLS12381G2_XMDSHA256_SSWU_NU_   SuiteID = "BLS12381G2_XMD:SHA-256_SSWU_NU_"
+	BLS12381G2_XMDSHA256_SSWU_RO_   SuiteID = "BLS12381G2_XMD:SHA-256_SSWU_RO_"
 )
 
 // Get returns a HashToPoint based on the SuiteID, otherwise returns an error
@@ -96,22 +84,12 @@ func init() {
 
 	P256_XMDSHA256_SSWU_NU_.register(&params{E: C.P256, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Z: -10}, L: 48, RO: false})
 	P256_XMDSHA256_SSWU_RO_.register(&params{E: C.P256, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Z: -10}, L: 48, RO: true})
-	P256_XMDSHA256_SVDW_NU_.register(&params{E: C.P256, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SVDW, Z: -3}, L: 48, RO: false})
-	P256_XMDSHA256_SVDW_RO_.register(&params{E: C.P256, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SVDW, Z: -3}, L: 48, RO: true})
 	P384_XMDSHA512_SSWU_NU_.register(&params{E: C.P384, K: 192, Exp: sha512, Map: M.MapDescriptor{ID: M.SSWU, Z: -12}, L: 72, RO: false})
 	P384_XMDSHA512_SSWU_RO_.register(&params{E: C.P384, K: 192, Exp: sha512, Map: M.MapDescriptor{ID: M.SSWU, Z: -12}, L: 72, RO: true})
-	P384_XMDSHA512_SVDW_NU_.register(&params{E: C.P384, K: 192, Exp: sha512, Map: M.MapDescriptor{ID: M.SVDW, Z: -1}, L: 72, RO: false})
-	P384_XMDSHA512_SVDW_RO_.register(&params{E: C.P384, K: 192, Exp: sha512, Map: M.MapDescriptor{ID: M.SVDW, Z: -1}, L: 72, RO: true})
 	P521_XMDSHA512_SSWU_NU_.register(&params{E: C.P521, K: 256, Exp: sha512, Map: M.MapDescriptor{ID: M.SSWU, Z: -4}, L: 98, RO: false})
 	P521_XMDSHA512_SSWU_RO_.register(&params{E: C.P521, K: 256, Exp: sha512, Map: M.MapDescriptor{ID: M.SSWU, Z: -4}, L: 98, RO: true})
-	P521_XMDSHA512_SVDW_NU_.register(&params{E: C.P521, K: 256, Exp: sha512, Map: M.MapDescriptor{ID: M.SVDW, Z: 1}, L: 98, RO: false})
-	P521_XMDSHA512_SVDW_RO_.register(&params{E: C.P521, K: 256, Exp: sha512, Map: M.MapDescriptor{ID: M.SVDW, Z: 1}, L: 98, RO: true})
-	Curve25519_XMDSHA256_ELL2_NU_.register(&params{E: C.Curve25519, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.ELL2, Z: 2}, L: 48, RO: false})
-	Curve25519_XMDSHA256_ELL2_RO_.register(&params{E: C.Curve25519, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.ELL2, Z: 2}, L: 48, RO: true})
 	Curve25519_XMDSHA512_ELL2_NU_.register(&params{E: C.Curve25519, K: 128, Exp: sha512, Map: M.MapDescriptor{ID: M.ELL2, Z: 2}, L: 48, RO: false})
 	Curve25519_XMDSHA512_ELL2_RO_.register(&params{E: C.Curve25519, K: 128, Exp: sha512, Map: M.MapDescriptor{ID: M.ELL2, Z: 2}, L: 48, RO: true})
-	Edwards25519_XMDSHA256_ELL2_NU_.register(&params{E: C.Edwards25519, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.ELL2, Z: 2}, L: 48, RO: false})
-	Edwards25519_XMDSHA256_ELL2_RO_.register(&params{E: C.Edwards25519, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.ELL2, Z: 2}, L: 48, RO: true})
 	Edwards25519_XMDSHA512_ELL2_NU_.register(&params{E: C.Edwards25519, K: 128, Exp: sha512, Map: M.MapDescriptor{ID: M.ELL2, Z: 2}, L: 48, RO: false})
 	Edwards25519_XMDSHA512_ELL2_RO_.register(&params{E: C.Edwards25519, K: 128, Exp: sha512, Map: M.MapDescriptor{ID: M.ELL2, Z: 2}, L: 48, RO: true})
 	Curve448_XMDSHA512_ELL2_NU_.register(&params{E: C.Curve448, K: 224, Exp: sha512, Map: M.MapDescriptor{ID: M.ELL2, Z: -1}, L: 84, RO: false})
@@ -120,10 +98,6 @@ func init() {
 	Edwards448_XMDSHA512_ELL2_RO_.register(&params{E: C.Edwards448, K: 224, Exp: sha512, Map: M.MapDescriptor{ID: M.ELL2, Z: -1}, L: 84, RO: true})
 	Secp256k1_XMDSHA256_SSWU_NU_.register(&params{E: C.SECP256K1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Z: -11, Iso: C.GetSECP256K1Isogeny}, L: 48, RO: false})
 	Secp256k1_XMDSHA256_SSWU_RO_.register(&params{E: C.SECP256K1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Z: -11, Iso: C.GetSECP256K1Isogeny}, L: 48, RO: true})
-	Secp256k1_XMDSHA256_SVDW_NU_.register(&params{E: C.SECP256K1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SVDW, Z: 1}, L: 48, RO: false})
-	Secp256k1_XMDSHA256_SVDW_RO_.register(&params{E: C.SECP256K1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SVDW, Z: 1}, L: 48, RO: true})
 	BLS12381G1_XMDSHA256_SSWU_NU_.register(&params{E: C.BLS12381G1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Z: 11, Iso: C.GetBLS12381G1Isogeny}, L: 64, RO: false})
 	BLS12381G1_XMDSHA256_SSWU_RO_.register(&params{E: C.BLS12381G1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Z: 11, Iso: C.GetBLS12381G1Isogeny}, L: 64, RO: true})
-	BLS12381G1_XMDSHA256_SVDW_NU_.register(&params{E: C.BLS12381G1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SVDW, Z: -3}, L: 64, RO: false})
-	BLS12381G1_XMDSHA256_SVDW_RO_.register(&params{E: C.BLS12381G1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SVDW, Z: -3}, L: 64, RO: true})
 }
