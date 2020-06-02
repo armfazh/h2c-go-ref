@@ -8,9 +8,8 @@ import (
 )
 
 type wcEll2 struct {
-	E    C.WC
-	Z    GF.Elt
-	Sgn0 func(GF.Elt) int
+	E C.WC
+	Z GF.Elt
 }
 
 func (m wcEll2) String() string { return fmt.Sprintf("Elligator2 for E: %v", m.E) }
@@ -18,7 +17,7 @@ func (m wcEll2) String() string { return fmt.Sprintf("Elligator2 for E: %v", m.E
 func newWCEll2(e C.WC) MapToCurve {
 	F := e.F
 	if !F.IsZero(e.A) && !F.IsZero(e.B) { // A != 0 and  B != 0
-		return &wcEll2{e, findZ(F), F.GetSgn0(GF.SignLE)}
+		return &wcEll2{e, findZ(F)}
 	}
 	panic("Curve didn't match elligator2 mapping")
 }
@@ -57,8 +56,8 @@ func (m *wcEll2) Map(u GF.Elt) C.Point {
 	x = F.CMov(x2, x1, e2)          // 15.   x = CMOV(x2, x1, e2)    // If is_square(gx1), x = x1, else x = x2
 	y2 = F.CMov(gx2, gx1, e2)       // 16.  y2 = CMOV(gx2, gx1, e2)  // If is_square(gx1), y2 = gx1, else y2 = gx2
 	y = F.Sqrt(y2)                  // 17.   y = sqrt(y2)
-	e3 = m.Sgn0(y) == 1             // 18.  e3 = sgn0(y) == 1
+	e3 = F.Sgn0(y) == 1             // 18.  e3 = sgn0(y) == 1
 	e := (e2 && !e3) || (!e2 && e3) // 19.   e = e2 xor e3
-	y = F.CMov(F.Neg(y), y, e)      //       y = CMOV(-y, y, e2 xor e3)
+	y = F.CMov(y, F.Neg(y), e)      //       y = CMOV(-y, y, e2 xor e3)
 	return m.E.NewPoint(x, y)
 }

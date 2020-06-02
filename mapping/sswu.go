@@ -27,14 +27,13 @@ type sswu struct {
 	E      C.W
 	Z      GF.Elt
 	c1, c2 GF.Elt
-	Sgn0   func(GF.Elt) int
 }
 
 func (m sswu) String() string { return fmt.Sprintf("Simple SWU for E: %v", m.E) }
 
 func newSSWU(e C.EllCurve, z GF.Elt) MapToCurve {
 	curve := e.(C.W)
-	if s := (&sswu{E: curve, Z: z, Sgn0: curve.F.GetSgn0(GF.SignLE)}); s.verify() {
+	if s := (&sswu{E: curve, Z: z}); s.verify() {
 		s.precmp()
 		return s
 	}
@@ -91,7 +90,7 @@ func (m *sswu) Map(u GF.Elt) C.Point {
 	x = F.CMov(x2, x1, e2)      // 17.   x = CMOV(x2, x1, e2)
 	y2 = F.CMov(gx2, gx1, e2)   // 18.  y2 = CMOV(gx2, gx1, e2)
 	y = F.Sqrt(y2)              // 19.   y = sqrt(y2)
-	e3 = m.Sgn0(u) == m.Sgn0(y) // 20.  e3 = sgn0(u) == sgn0(y)
+	e3 = F.Sgn0(u) == F.Sgn0(y) // 20.  e3 = sgn0(u) == sgn0(y)
 	y = F.CMov(F.Neg(y), y, e3) // 21.   y = CMOV(-y, y, e3)
 	return m.E.NewPoint(x, y)
 }

@@ -9,8 +9,7 @@ import (
 )
 
 type wA0ell2 struct {
-	E    C.W
-	Sgn0 func(GF.Elt) int
+	E C.W
 }
 
 func (m wA0ell2) String() string { return fmt.Sprintf("Elligator2A0 for E: %v", m.E) }
@@ -23,7 +22,7 @@ func newWA0Ell2(e C.W) MapToCurve {
 	precond3 := F.IsZero(e.B)                               // B == 0
 
 	if precond1 && precond2 && precond3 {
-		return &wA0ell2{e, F.GetSgn0(GF.SignLE)}
+		return &wA0ell2{e}
 	}
 	panic("Curve didn't match elligator2 mapping")
 }
@@ -41,7 +40,7 @@ func (m *wA0ell2) Map(u GF.Elt) C.Point {
 	y = F.Sqrt(gx1)                // 6.   y = sqrt(gx1)  // This is either sqrt(gx1) or sqrt(gx2)
 	e1 = F.AreEqual(F.Sqr(y), gx1) // 7.  e1 = (y^2) == gx1
 	x = F.CMov(x2, x1, e1)         // 8.   x = CMOV(x2, x1, e1)
-	e2 = m.Sgn0(u) == m.Sgn0(y)    // 9.  e2 = sgn0(u) == sgn0(y)
+	e2 = F.Sgn0(u) == F.Sgn0(y)    // 9.  e2 = sgn0(u) == sgn0(y)
 	y = F.CMov(F.Neg(y), y, e2)    // 10.  y = CMOV(-y, y, e2)
 	return m.E.NewPoint(x, y)
 }

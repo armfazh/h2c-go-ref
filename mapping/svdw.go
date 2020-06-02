@@ -11,7 +11,6 @@ type svdw struct {
 	E              C.W
 	Z              GF.Elt
 	c1, c2, c3, c4 GF.Elt
-	Sgn0           func(GF.Elt) int
 }
 
 func (m svdw) String() string { return fmt.Sprintf("SVDW for E: %v", m.E) }
@@ -19,7 +18,7 @@ func (m svdw) String() string { return fmt.Sprintf("SVDW for E: %v", m.E) }
 // NewSVDW implements the Shallue-van de Woestijne method.
 func NewSVDW(e C.EllCurve) MapToCurve {
 	curve := e.(C.W)
-	s := &svdw{E: curve, Sgn0: curve.F.GetSgn0(GF.SignLE)}
+	s := &svdw{E: curve}
 	s.precmp()
 	return s
 }
@@ -79,7 +78,7 @@ func (m *svdw) precmp() {
 	t1 = F.Mul(t0, m.c1)     // g(Z)*(3Z^2+4A)
 	t1 = F.Neg(t1)           // -g(Z)/(3Z^2+4A)
 	m.c3 = F.Sqrt(t1)        // sqrt(-g(Z)/(3Z^2+4A))
-	if m.Sgn0(m.c3) == -1 {  // sgn0(c3) MUST be equal 1
+	if F.Sgn0(m.c3) == 1 {   // sgn0(c3) MUST be equal 1
 		m.c3 = F.Neg(m.c3)
 	}
 	t0 = F.Inv(t0)       // 1/(3Z^2+4A)
@@ -128,7 +127,7 @@ func (m *svdw) Map(u GF.Elt) C.Point {
 	gx = F.Mul(gx, x)             // 31.  gx = gx * x
 	gx = F.Add(gx, m.E.B)         // 32.  gx = gx + B
 	y = F.Sqrt(gx)                // 33.   y = sqrt(gx)
-	e3 = m.Sgn0(u) == m.Sgn0(y)   // 34.  e3 = sgn0(u) == sgn0(y)
+	e3 = F.Sgn0(u) == F.Sgn0(y)   // 34.  e3 = sgn0(u) == sgn0(y)
 	y = F.CMov(F.Neg(y), y, e3)   // 35.   y = CMOV(-y, y, e3)
 
 	return m.E.NewPoint(x, y)
