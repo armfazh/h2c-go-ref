@@ -34,7 +34,7 @@ func (id ID) Get() F.Field {
 	case BLS12381G1:
 		return F.NewFp(string(id), "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab")
 	case BLS12381G2:
-		panic("not implemented yet")
+		return F.NewFp2(string(id), "0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab")
 	default:
 		panic("field not supported")
 	}

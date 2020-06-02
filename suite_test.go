@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	h2c "github.com/armfazh/h2c-go-ref"
@@ -57,11 +58,16 @@ func (v vectorSuite) test(t *testing.T) {
 	E := hashToCurve.GetCurve()
 	F := E.Field()
 	for i := range v.Vectors {
+		var x, y []interface{}
+		for _, xi := range strings.Split(v.Vectors[i].P.X, ",") {
+			x = append(x, xi)
+		}
+		for _, yi := range strings.Split(v.Vectors[i].P.Y, ",") {
+			y = append(y, yi)
+		}
+
 		got := hashToCurve.Hash([]byte(v.Vectors[i].Msg))
-		want := E.NewPoint(
-			F.Elt(v.Vectors[i].P.X),
-			F.Elt(v.Vectors[i].P.Y),
-		)
+		want := E.NewPoint(F.Elt(x), F.Elt(y))
 		if !got.IsEqual(want) {
 			t.Fatalf("suite: %v\ngot:  %v\nwant: %v", v.SuiteID, got, want)
 		}

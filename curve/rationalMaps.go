@@ -273,3 +273,103 @@ func (m isobls12381G1) Push(p C.Point) C.Point {
 	yy = F.Mul(yy, y)
 	return m.E1.NewPoint(xx, yy)
 }
+
+type isobls12381G2 struct {
+	E0, E1                 C.EllCurve
+	xNum, xDen, yNum, yDen []GF.Elt
+}
+
+// GetBLS12381G2Isogeny returns an 3-degree isogeny from BLS12381G2_11ISO to the BLS12381G2 elliptic curve.
+func GetBLS12381G2Isogeny() C.Isogeny {
+	e0 := BLS12381G2_3ISO.Get()
+	e1 := BLS12381G2.Get()
+	F := e0.Field()
+	return isobls12381G2{
+		E0: e0,
+		E1: e1,
+		xNum: []GF.Elt{
+			F.Elt([]interface{}{
+				"0x5c759507e8e333ebb5b7a9a47d7ed8532c52d39fd3a042a88b58423c50ae15d5c2638e343d9c71c6238aaaaaaaa97d6",
+				"0x5c759507e8e333ebb5b7a9a47d7ed8532c52d39fd3a042a88b58423c50ae15d5c2638e343d9c71c6238aaaaaaaa97d6",
+			}),
+			F.Elt([]interface{}{
+				"0",
+				"0x11560bf17baa99bc32126fced787c88f984f87adf7ae0c7f9a208c6b4f20a4181472aaa9cb8d555526a9ffffffffc71a",
+			}),
+			F.Elt([]interface{}{
+				"0x11560bf17baa99bc32126fced787c88f984f87adf7ae0c7f9a208c6b4f20a4181472aaa9cb8d555526a9ffffffffc71e",
+				"0x8ab05f8bdd54cde190937e76bc3e447cc27c3d6fbd7063fcd104635a790520c0a395554e5c6aaaa9354ffffffffe38d",
+			}),
+			F.Elt([]interface{}{
+				"0x171d6541fa38ccfaed6dea691f5fb614cb14b4e7f4e810aa22d6108f142b85757098e38d0f671c7188e2aaaaaaaa5ed1",
+				"0",
+			}),
+		},
+		xDen: []GF.Elt{
+			F.Elt([]interface{}{
+				"0",
+				"0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaa63",
+			}),
+			F.Elt([]interface{}{
+				"0xc",
+				"0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaa9f",
+			}),
+			F.One(),
+			F.Zero(),
+		},
+		yNum: []GF.Elt{
+			F.Elt([]interface{}{
+				"0x1530477c7ab4113b59a4c18b076d11930f7da5d4a07f649bf54439d87d27e500fc8c25ebf8c92f6812cfc71c71c6d706",
+				"0x1530477c7ab4113b59a4c18b076d11930f7da5d4a07f649bf54439d87d27e500fc8c25ebf8c92f6812cfc71c71c6d706",
+			}),
+			F.Elt([]interface{}{
+				"0",
+				"0x5c759507e8e333ebb5b7a9a47d7ed8532c52d39fd3a042a88b58423c50ae15d5c2638e343d9c71c6238aaaaaaaa97be",
+			}),
+			F.Elt([]interface{}{
+				"0x11560bf17baa99bc32126fced787c88f984f87adf7ae0c7f9a208c6b4f20a4181472aaa9cb8d555526a9ffffffffc71c",
+				"0x8ab05f8bdd54cde190937e76bc3e447cc27c3d6fbd7063fcd104635a790520c0a395554e5c6aaaa9354ffffffffe38f",
+			}),
+			F.Elt([]interface{}{
+				"0x124c9ad43b6cf79bfbf7043de3811ad0761b0f37a1e26286b0e977c69aa274524e79097a56dc4bd9e1b371c71c718b10",
+				"0",
+			}),
+		},
+		yDen: []GF.Elt{
+			F.Elt([]interface{}{
+				"0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffa8fb",
+				"0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffa8fb",
+			}),
+			F.Elt([]interface{}{
+				"0",
+				"0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffa9d3",
+			}),
+			F.Elt([]interface{}{
+				"0x12",
+				"0x1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaa99",
+			}),
+			F.One(),
+		},
+	}
+}
+func (m isobls12381G2) String() string       { return fmt.Sprintf("3-Isogeny from %v to\n%v", m.E0, m.E1) }
+func (m isobls12381G2) Domain() C.EllCurve   { return m.E0 }
+func (m isobls12381G2) Codomain() C.EllCurve { return m.E1 }
+func (m isobls12381G2) Push(p C.Point) C.Point {
+	F := m.E0.Field()
+	x, y := p.X(), p.Y()
+	xNum, xDen := F.Zero(), F.Zero()
+	for i := len(m.xNum) - 1; i >= 0; i-- {
+		xNum = F.Add(F.Mul(xNum, x), m.xNum[i])
+		xDen = F.Add(F.Mul(xDen, x), m.xDen[i])
+	}
+	yNum, yDen := F.Zero(), F.Zero()
+	for i := len(m.yNum) - 1; i >= 0; i-- {
+		yNum = F.Add(F.Mul(yNum, x), m.yNum[i])
+		yDen = F.Add(F.Mul(yDen, x), m.yDen[i])
+	}
+	xx := F.Mul(xNum, F.Inv(xDen))
+	yy := F.Mul(yNum, F.Inv(yDen))
+	yy = F.Mul(yy, y)
+	return m.E1.NewPoint(xx, yy)
+}

@@ -41,7 +41,7 @@ const (
 // MapDescriptor describes parameters of a mapping to curve.
 type MapDescriptor struct {
 	ID  ID
-	Z   int
+	Z   interface{}
 	Iso func() C.Isogeny
 }
 

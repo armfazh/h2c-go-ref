@@ -100,4 +100,6 @@ func init() {
 	Secp256k1_XMDSHA256_SSWU_RO_.register(&params{E: C.SECP256K1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Z: -11, Iso: C.GetSECP256K1Isogeny}, L: 48, RO: true})
 	BLS12381G1_XMDSHA256_SSWU_NU_.register(&params{E: C.BLS12381G1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Z: 11, Iso: C.GetBLS12381G1Isogeny}, L: 64, RO: false})
 	BLS12381G1_XMDSHA256_SSWU_RO_.register(&params{E: C.BLS12381G1, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Z: 11, Iso: C.GetBLS12381G1Isogeny}, L: 64, RO: true})
+	BLS12381G2_XMDSHA256_SSWU_NU_.register(&params{E: C.BLS12381G2, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Z: []interface{}{-2, -1}, Iso: C.GetBLS12381G2Isogeny}, L: 64, RO: false})
+	BLS12381G2_XMDSHA256_SSWU_RO_.register(&params{E: C.BLS12381G2, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Z: []interface{}{-2, -1}, Iso: C.GetBLS12381G2Isogeny}, L: 64, RO: true})
 }

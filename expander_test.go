@@ -54,7 +54,7 @@ func (v expandMsgVector) test(t *testing.T) {
 		if err != nil {
 			t.Errorf(err.Error())
 		}
-		if bytes.Compare(got, want) != 0 {
+		if !bytes.Equal(got, want) {
 			t.Fatalf("suite: %v\ngot:  %v\nwant: %v", v.Hash, got, want)
 		}
 	}

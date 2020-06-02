@@ -39,14 +39,13 @@ func (e *encoding) hashToField(
 	pseudo := e.Exp.Expand(msg, length)
 	u := make([]GF.Elt, count)
 	v := make([]interface{}, m)
-	var vj big.Int
 	p := F.P()
 	for i := uint(0); i < count; i++ {
 		for j := uint(0); j < m; j++ {
 			offset := e.L * (j + i*m)
 			t := pseudo[offset : offset+e.L]
-			vj.SetBytes(t)
-			v[j] = vj.Mod(&vj, p)
+			vj := new(big.Int).SetBytes(t)
+			v[j] = vj.Mod(vj, p)
 		}
 		u[i] = F.Elt(v)
 	}
