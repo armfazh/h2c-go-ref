@@ -17,9 +17,16 @@ type HashToPoint interface {
 	Hash(in []byte) C.Point
 	// GetCurve returns the destination elliptic curve.
 	GetCurve() C.EllCurve
+	// GetHashToScalar returns a hash function that hashes strings to field elements.
+	GetHashToScalar() HashToScalar
 }
 
-type FieldEncoding struct {
+type HashToScalar interface {
+	// Hash returns an element of a field given a byte string.
+	Hash(in []byte) GF.Elt
+}
+
+type fieldEncoding struct {
 	F   GF.Field
 	Exp Expander
 	L   uint
@@ -27,13 +34,13 @@ type FieldEncoding struct {
 
 // Hash deterministically hashes a string msg of any length into
 // an element of the given finite field.
-func (f *FieldEncoding) Hash(msg []byte) GF.Elt {
+func (f *fieldEncoding) Hash(msg []byte) GF.Elt {
 	return f.hashToField(msg, 1)[0]
 }
 
 // hashToField is a function that hashes a string msg of any length into an
 // element of a finite field.
-func (f *FieldEncoding) hashToField(
+func (f *fieldEncoding) hashToField(
 	msg []byte, // msg is the message to hash.
 	count uint, // count is 1 or 2 (the length of the result array).
 ) []GF.Elt {
@@ -59,7 +66,7 @@ func (f *FieldEncoding) hashToField(
 type encoding struct {
 	E             C.EllCurve
 	Mapping       M.MapToCurve
-	FieldEncoding *FieldEncoding
+	FieldEncoding *fieldEncoding
 }
 
 func (e *encoding) GetCurve() C.EllCurve { return e.E }
@@ -74,6 +81,10 @@ func (s *encodeToCurve) Hash(in []byte) C.Point {
 	return P
 }
 
+func (s *encodeToCurve) GetHashToScalar() HashToScalar {
+	return s.FieldEncoding
+}
+
 type hashToCurve struct{ *encoding }
 
 func (s *hashToCurve) IsRandomOracle() bool { return true }
@@ -84,4 +95,8 @@ func (s *hashToCurve) Hash(in []byte) C.Point {
 	R := s.E.Add(Q0, Q1)
 	P := s.E.ClearCofactor(R)
 	return P
+}
+
+func (s *hashToCurve) GetHashToScalar() HashToScalar {
+	return s.FieldEncoding
 }
