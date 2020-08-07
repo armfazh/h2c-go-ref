@@ -19,12 +19,7 @@ type HashToPoint interface {
 	GetCurve() C.EllCurve
 }
 
-// HashToScalar is an interface for hashing strings to scalars in a field.
-type HashToScalar interface {
-	Hash(in []byte) GF.Elt
-}
-
-type fieldEncoding struct {
+type FieldEncoding struct {
 	F   GF.Field
 	Exp Expander
 	L   uint
@@ -32,43 +27,39 @@ type fieldEncoding struct {
 
 // Hash deterministically hashes a string msg of any length into
 // an element of the given finite field.
-func (f *fieldEncoding) Hash(msg []byte) GF.Elt {
-	return hashToField(msg, 1, f.F, f.Exp, f.L)[0]
+func (f *FieldEncoding) Hash(msg []byte) GF.Elt {
+	return f.hashToField(msg, 1)[0]
 }
 
 // hashToField is a function that hashes a string msg of any length into an
 // element of a finite field.
-func hashToField(
+func (f *FieldEncoding) hashToField(
 	msg []byte, // msg is the message to hash.
 	count uint, // count is 1 or 2 (the length of the result array).
-	field GF.Field, // field is the field to map into
-	expander Expander,
-	L uint,
 ) []GF.Elt {
-	m := field.Ext()
-	length := count * m * L
+	m := f.F.Ext()
+	length := count * m * f.L
 
-	pseudo := expander.Expand(msg, length)
+	pseudo := f.Exp.Expand(msg, length)
 	u := make([]GF.Elt, count)
 	v := make([]interface{}, m)
-	p := field.P()
+	p := f.F.P()
 	for i := uint(0); i < count; i++ {
 		for j := uint(0); j < m; j++ {
-			offset := L * (j + i*m)
-			t := pseudo[offset : offset+L]
+			offset := f.L * (j + i*m)
+			t := pseudo[offset : offset+f.L]
 			vj := new(big.Int).SetBytes(t)
 			v[j] = vj.Mod(vj, p)
 		}
-		u[i] = field.Elt(v)
+		u[i] = f.F.Elt(v)
 	}
 	return u
 }
 
 type encoding struct {
-	E       C.EllCurve
-	Exp     Expander
-	Mapping M.MapToCurve
-	L       uint
+	E             C.EllCurve
+	Mapping       M.MapToCurve
+	FieldEncoding *FieldEncoding
 }
 
 func (e *encoding) GetCurve() C.EllCurve { return e.E }
@@ -77,7 +68,7 @@ type encodeToCurve struct{ *encoding }
 
 func (s *encodeToCurve) IsRandomOracle() bool { return false }
 func (s *encodeToCurve) Hash(in []byte) C.Point {
-	u := hashToField(in, 1, s.E.Field(), s.Exp, s.L)
+	u := s.FieldEncoding.hashToField(in, 1)
 	Q := s.Mapping.Map(u[0])
 	P := s.E.ClearCofactor(Q)
 	return P
@@ -87,7 +78,7 @@ type hashToCurve struct{ *encoding }
 
 func (s *hashToCurve) IsRandomOracle() bool { return true }
 func (s *hashToCurve) Hash(in []byte) C.Point {
-	u := hashToField(in, 2, s.E.Field(), s.Exp, s.L)
+	u := s.FieldEncoding.hashToField(in, 2)
 	Q0 := s.Mapping.Map(u[0])
 	Q1 := s.Mapping.Map(u[1])
 	R := s.E.Add(Q0, Q1)

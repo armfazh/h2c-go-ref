@@ -47,32 +47,18 @@ func (id SuiteID) Get(dst []byte) (HashToPoint, error) {
 			return nil, err
 		}
 		e := &encoding{
-			E:       E,
-			Exp:     exp,
+			E: E,
+			FieldEncoding: &FieldEncoding{
+				F:   E.Field(),
+				Exp: exp,
+				L:   s.L,
+			},
 			Mapping: m,
-			L:       s.L,
 		}
 		if s.RO {
 			return &hashToCurve{e}, nil
 		}
 		return &encodeToCurve{e}, nil
-	}
-	return nil, fmt.Errorf("Suite: %v not supported", id)
-}
-
-func (id SuiteID) GetHashToScalar(dst []byte) (HashToScalar, error) {
-	if s, ok := supportedSuitesID[id]; ok {
-		F := s.E.Get().Field()
-		exp, err := s.Exp.Get(dst, s.K)
-		if err != nil {
-			return nil, err
-		}
-		f := &fieldEncoding{
-			F:   F,
-			Exp: exp,
-			L:   s.L,
-		}
-		return f, nil
 	}
 	return nil, fmt.Errorf("Suite: %v not supported", id)
 }
