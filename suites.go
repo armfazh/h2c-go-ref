@@ -48,7 +48,7 @@ func (id SuiteID) Get(dst []byte) (HashToPoint, error) {
 		}
 		e := &encoding{
 			E: E,
-			FieldEncoding: &FieldEncoding{
+			FieldEncoding: &fieldEncoding{
 				F:   E.Field(),
 				Exp: exp,
 				L:   s.L,
