@@ -64,9 +64,10 @@ func (f *fieldEncoding) hashToField(
 }
 
 type encoding struct {
-	E             C.EllCurve
-	Mapping       M.MapToCurve
-	FieldEncoding *fieldEncoding
+	E           C.EllCurve
+	Mapping     M.MapToCurve
+	Field       *fieldEncoding
+	ScalarField GF.Field
 }
 
 func (e *encoding) GetCurve() C.EllCurve { return e.E }
@@ -75,28 +76,28 @@ type encodeToCurve struct{ *encoding }
 
 func (s *encodeToCurve) IsRandomOracle() bool { return false }
 func (s *encodeToCurve) Hash(in []byte) C.Point {
-	u := s.FieldEncoding.hashToField(in, 1)
+	u := s.Field.hashToField(in, 1)
 	Q := s.Mapping.Map(u[0])
 	P := s.E.ClearCofactor(Q)
 	return P
 }
 
-func (s *encodeToCurve) GetHashToScalar() HashToScalar {
-	return s.FieldEncoding
+func (e *encoding) GetHashToScalar() HashToScalar {
+	return &fieldEncoding{
+		F:   e.ScalarField,
+		Exp: e.Field.Exp,
+		L:   e.Field.L,
+	}
 }
 
 type hashToCurve struct{ *encoding }
 
 func (s *hashToCurve) IsRandomOracle() bool { return true }
 func (s *hashToCurve) Hash(in []byte) C.Point {
-	u := s.FieldEncoding.hashToField(in, 2)
+	u := s.Field.hashToField(in, 2)
 	Q0 := s.Mapping.Map(u[0])
 	Q1 := s.Mapping.Map(u[1])
 	R := s.E.Add(Q0, Q1)
 	P := s.E.ClearCofactor(R)
 	return P
-}
-
-func (s *hashToCurve) GetHashToScalar() HashToScalar {
-	return s.FieldEncoding
 }
