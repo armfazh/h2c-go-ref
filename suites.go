@@ -54,8 +54,7 @@ func (id SuiteID) Get(dst []byte) (HashToPoint, error) {
 				Exp: exp,
 				L:   s.L,
 			},
-			// TATIANA: what should name be here?
-			ScalarField: field.NewFp("", E.Field().P()),
+			ScalarField: field.NewFp(fmt.Sprintf("%v", E.Order()), E.Order()),
 			Mapping:     m,
 		}
 		if s.RO {
