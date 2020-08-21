@@ -1,5 +1,3 @@
-github.com/armfazh/tozan-ecc v0.1.1 h1:t22NORZiIzJOUdNN/bKdRJpfZOSLohoCSUkivm6+hIE=
-github.com/armfazh/tozan-ecc v0.1.1/go.mod h1:u25eZC5Z8uJFQxJxGBz1Blfii/7m3DfmwX0vFnwtG9I=
 github.com/armfazh/tozan-ecc v0.1.2 h1:mhwrQnxiKqlDUdU5v6o6IBXF+CUPhuLAEIAH1gdIAf0=
 github.com/armfazh/tozan-ecc v0.1.2/go.mod h1:u25eZC5Z8uJFQxJxGBz1Blfii/7m3DfmwX0vFnwtG9I=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
