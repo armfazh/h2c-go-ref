@@ -8,7 +8,6 @@ import (
 
 	C "github.com/armfazh/h2c-go-ref/curve"
 	M "github.com/armfazh/h2c-go-ref/mapping"
-	"github.com/armfazh/tozan-ecc/field"
 )
 
 // SuiteID is the identifier of supported hash to curve suites.
@@ -54,8 +53,7 @@ func (id SuiteID) Get(dst []byte) (HashToPoint, error) {
 				Exp: exp,
 				L:   s.L,
 			},
-			ScalarField: field.NewFp(fmt.Sprintf("%v", E.Order()), E.Order()),
-			Mapping:     m,
+			Mapping: m,
 		}
 		if s.RO {
 			return &hashToCurve{e}, nil

@@ -55,9 +55,10 @@ func (v vectorSuite) test(t *testing.T) {
 	if err != nil {
 		t.Skipf(err.Error())
 	}
-	//hashToScalar := hashToCurve.GetHashToScalar()
+	hashToScalar := hashToCurve.GetHashToScalar()
 	E := hashToCurve.GetCurve()
 	F := E.Field()
+	maxScalar := hashToScalar.GetScalarField().Order()
 	for i := range v.Vectors {
 		var x, y []interface{}
 		for _, xi := range strings.Split(v.Vectors[i].P.X, ",") {
@@ -73,12 +74,11 @@ func (v vectorSuite) test(t *testing.T) {
 			t.Fatalf("suite: %v\ngot:  %v\nwant: %v", v.SuiteID, got, want)
 		}
 
-		// TODO: test HashToScalar
-		// gotH2S := hashToScalar.Hash([]byte(v.Vectors[i].Msg))
-		// var wantH2S field.Elt // TATIANA: how do I get the "want" value here?
-		// if !F.AreEqual(gotH2S, wantH2S) {
-		// 	t.Fatalf("suite: %v\ngot:  %v\nwant: %v", v.SuiteID, gotH2S, wantH2S)
-		// }
+		kElt := hashToScalar.Hash([]byte(v.Vectors[i].Msg))
+		kInt := kElt.Polynomial()[0]
+		if kInt.Sign() < 0 || kInt.Cmp(maxScalar) >= 0 {
+			t.Fatalf("suite: %v\ngot:  %v", v.SuiteID, kInt)
+		}
 	}
 }
 

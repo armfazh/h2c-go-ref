@@ -1,10 +1,12 @@
 package h2c
 
 import (
+	"fmt"
 	"math/big"
 
 	M "github.com/armfazh/h2c-go-ref/mapping"
 	C "github.com/armfazh/tozan-ecc/curve"
+	"github.com/armfazh/tozan-ecc/field"
 	GF "github.com/armfazh/tozan-ecc/field"
 )
 
@@ -21,7 +23,10 @@ type HashToPoint interface {
 	GetHashToScalar() HashToScalar
 }
 
+// HashToScalar allows to hash string into the field of scalars used for scalar multiplication.
 type HashToScalar interface {
+	// GetScalarField returns the field of scalars.
+	GetScalarField() GF.Field
 	// Hash returns an element of a field given a byte string.
 	Hash(in []byte) GF.Elt
 }
@@ -32,11 +37,11 @@ type fieldEncoding struct {
 	L   uint
 }
 
+func (f *fieldEncoding) GetScalarField() GF.Field { return f.F }
+
 // Hash deterministically hashes a string msg of any length into
 // an element of the given finite field.
-func (f *fieldEncoding) Hash(msg []byte) GF.Elt {
-	return f.hashToField(msg, 1)[0]
-}
+func (f *fieldEncoding) Hash(msg []byte) GF.Elt { return f.hashToField(msg, 1)[0] }
 
 // hashToField is a function that hashes a string msg of any length into an
 // element of a finite field.
@@ -64,15 +69,22 @@ func (f *fieldEncoding) hashToField(
 }
 
 type encoding struct {
-	E           C.EllCurve
-	Mapping     M.MapToCurve
-	Field       *fieldEncoding
-	ScalarField GF.Field
+	E       C.EllCurve
+	Mapping M.MapToCurve
+	Field   *fieldEncoding
 }
 
 func (e *encoding) GetCurve() C.EllCurve { return e.E }
 
 type encodeToCurve struct{ *encoding }
+
+func (e *encoding) GetHashToScalar() HashToScalar {
+	return &fieldEncoding{
+		F:   field.NewFp(fmt.Sprintf("%v", e.E.Order()), e.E.Order()),
+		Exp: e.Field.Exp,
+		L:   e.Field.L,
+	}
+}
 
 func (s *encodeToCurve) IsRandomOracle() bool { return false }
 func (s *encodeToCurve) Hash(in []byte) C.Point {
@@ -80,14 +92,6 @@ func (s *encodeToCurve) Hash(in []byte) C.Point {
 	Q := s.Mapping.Map(u[0])
 	P := s.E.ClearCofactor(Q)
 	return P
-}
-
-func (e *encoding) GetHashToScalar() HashToScalar {
-	return &fieldEncoding{
-		F:   e.ScalarField,
-		Exp: e.Field.Exp,
-		L:   e.Field.L,
-	}
 }
 
 type hashToCurve struct{ *encoding }
