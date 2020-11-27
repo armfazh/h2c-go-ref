@@ -47,7 +47,7 @@ func (id ID) Get() C.EllCurve {
 		return C.Weierstrass.New(string(id), f,
 			f.Elt("-3"),
 			f.Elt("0x051953eb9618e1c9a1f929a21a0b68540eea2da725b99b315f3b8b489918ef109e156193951ec7e937b1652c0bd3bb1bf073573df883d2c34f1ef451fd46b503f00"),
-			str2bigInt("0x7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd15b6c64746fc85f736b8af5e7ec53f04fbd8c4569a8f1f4540ea2435f5180d6b"),
+			str2bigInt("0x1fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffa51868783bf2f966b7fcc0148f709a5d03bb5c9b8899c47aebb6fb71e91386409"),
 			big.NewInt(1))
 	case SECP256K1:
 		f := GF.P256K1.Get()
