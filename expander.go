@@ -27,17 +27,17 @@ const (
 
 // ExpanderDesc describes an expander
 type ExpanderDesc struct {
-	ty ExpanderType
-	id uint // This id is converted to either crypto.Hash or to xof.Xof
+	Type ExpanderType
+	ID   uint // This id is converted to either crypto.Hash or to xof.Xof
 }
 
 // Get returns an XOF-based expander.
 func (d ExpanderDesc) Get(dst []byte, k uint) (e Expander, err error) {
-	switch d.ty {
+	switch d.Type {
 	case XMD:
-		e = &expanderXMD{dst, crypto.Hash(d.id)}
+		e = &expanderXMD{dst, crypto.Hash(d.ID)}
 	case XOF:
-		e = &expanderXOF{dst, xof.XofID(d.id), k}
+		e = &expanderXOF{dst, xof.XofID(d.ID), k}
 	default:
 		return nil, errors.New("expander not supported")
 	}
