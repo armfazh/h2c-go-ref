@@ -35,8 +35,10 @@ func (v expandMsgVector) test(t *testing.T) {
 		expID = ExpanderDesc{XMD, uint(crypto.SHA256)}
 	case "SHA512":
 		expID = ExpanderDesc{XMD, uint(crypto.SHA512)}
-	case "SHAKE_128":
+	case "SHAKE128":
 		expID = ExpanderDesc{XOF, uint(xof.SHAKE128)}
+	case "SHAKE256":
+		expID = ExpanderDesc{XOF, uint(xof.SHAKE256)}
 	default:
 		t.Fatal("Expander not supported")
 	}
@@ -84,7 +86,7 @@ func TestExpander(t *testing.T) {
 			if errJSON != nil {
 				return errJSON
 			}
-			t.Run(v.Hash, v.test)
+			t.Run(v.Name+"/"+v.Hash, v.test)
 			return nil
 		}); errFolder != nil {
 		t.Fatalf("error on reading testdata folder: %v", errFolder)
