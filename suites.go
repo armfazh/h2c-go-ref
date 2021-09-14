@@ -16,8 +16,8 @@ type SuiteID string
 const (
 	P256_XMDSHA256_SSWU_NU_         SuiteID = "P256_XMD:SHA-256_SSWU_NU_"
 	P256_XMDSHA256_SSWU_RO_         SuiteID = "P256_XMD:SHA-256_SSWU_RO_"
-	P384_XMDSHA512_SSWU_NU_         SuiteID = "P384_XMD:SHA-512_SSWU_NU_"
-	P384_XMDSHA512_SSWU_RO_         SuiteID = "P384_XMD:SHA-512_SSWU_RO_"
+	P384_XMDSHA384_SSWU_NU_         SuiteID = "P384_XMD:SHA-384_SSWU_NU_"
+	P384_XMDSHA384_SSWU_RO_         SuiteID = "P384_XMD:SHA-384_SSWU_RO_"
 	P521_XMDSHA512_SSWU_NU_         SuiteID = "P521_XMD:SHA-512_SSWU_NU_"
 	P521_XMDSHA512_SSWU_RO_         SuiteID = "P521_XMD:SHA-512_SSWU_RO_"
 	Curve25519_XMDSHA512_ELL2_NU_   SuiteID = "curve25519_XMD:SHA-512_ELL2_NU_"
@@ -83,12 +83,13 @@ var supportedSuitesID map[SuiteID]params
 func init() {
 	supportedSuitesID = make(map[SuiteID]params)
 	sha256 := ExpanderDesc{XMD, uint(crypto.SHA256)}
+	sha384 := ExpanderDesc{XMD, uint(crypto.SHA384)}
 	sha512 := ExpanderDesc{XMD, uint(crypto.SHA512)}
 
 	P256_XMDSHA256_SSWU_NU_.register(&params{E: C.P256, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Z: -10}, L: 48, RO: false})
 	P256_XMDSHA256_SSWU_RO_.register(&params{E: C.P256, K: 128, Exp: sha256, Map: M.MapDescriptor{ID: M.SSWU, Z: -10}, L: 48, RO: true})
-	P384_XMDSHA512_SSWU_NU_.register(&params{E: C.P384, K: 192, Exp: sha512, Map: M.MapDescriptor{ID: M.SSWU, Z: -12}, L: 72, RO: false})
-	P384_XMDSHA512_SSWU_RO_.register(&params{E: C.P384, K: 192, Exp: sha512, Map: M.MapDescriptor{ID: M.SSWU, Z: -12}, L: 72, RO: true})
+	P384_XMDSHA384_SSWU_NU_.register(&params{E: C.P384, K: 192, Exp: sha384, Map: M.MapDescriptor{ID: M.SSWU, Z: -12}, L: 72, RO: false})
+	P384_XMDSHA384_SSWU_RO_.register(&params{E: C.P384, K: 192, Exp: sha384, Map: M.MapDescriptor{ID: M.SSWU, Z: -12}, L: 72, RO: true})
 	P521_XMDSHA512_SSWU_NU_.register(&params{E: C.P521, K: 256, Exp: sha512, Map: M.MapDescriptor{ID: M.SSWU, Z: -4}, L: 98, RO: false})
 	P521_XMDSHA512_SSWU_RO_.register(&params{E: C.P521, K: 256, Exp: sha512, Map: M.MapDescriptor{ID: M.SSWU, Z: -4}, L: 98, RO: true})
 	Curve25519_XMDSHA512_ELL2_NU_.register(&params{E: C.Curve25519, K: 128, Exp: sha512, Map: M.MapDescriptor{ID: M.ELL2, Z: 2}, L: 48, RO: false})
