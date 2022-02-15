@@ -64,7 +64,52 @@ func (m *sswu) verify() bool {
 	return precond1 && precond2 && cond1 && cond2 && cond4
 }
 
+func (m *sswu) sqrtRatio(u GF.Elt, v GF.Elt) (bool, GF.Elt) {
+	F := m.E.F
+	r := F.Inv(v)
+	r = F.Mul(r, u)
+	if F.IsSquare(r) {
+		return true, F.Sqrt(r)
+	}
+	r = F.Mul(r, m.Z)
+	return false, F.Sqrt(r)
+}
+
 func (m *sswu) Map(u GF.Elt) C.Point {
+	F := m.E.F
+	var tv1, tv2, tv3, tv4, tv5, tv6, x, y GF.Elt
+
+	tv1 = F.Sqr(u)                                //    1.  tv1 = u^2
+	tv1 = F.Mul(m.Z, tv1)                         //    2.  tv1 = Z * tv1
+	tv2 = F.Sqr(tv1)                              //    3.  tv2 = tv1^2
+	tv2 = F.Add(tv2, tv1)                         //    4.  tv2 = tv2 + tv1
+	tv3 = F.Add(tv2, F.One())                     //    5.  tv3 = tv2 + 1
+	tv3 = F.Mul(m.E.B, tv3)                       //    6.  tv3 = B * tv3
+	tv4 = F.CMov(m.Z, F.Neg(tv2), !F.IsZero(tv2)) //    7.  tv4 = CMOV(Z, -tv2, tv2 != 0)
+	tv4 = F.Mul(m.E.A, tv4)                       //    8.  tv4 = A * tv4
+	tv2 = F.Sqr(tv3)                              //    9.  tv2 = tv3^2
+	tv6 = F.Sqr(tv4)                              //    10. tv6 = tv4^2
+	tv5 = F.Mul(m.E.A, tv6)                       //    11. tv5 = A * tv6
+	tv2 = F.Add(tv2, tv5)                         //    12. tv2 = tv2 + tv5
+	tv2 = F.Mul(tv2, tv3)                         //    13. tv2 = tv2 * tv3
+	tv6 = F.Mul(tv6, tv4)                         //    14. tv6 = tv6 * tv4
+	tv5 = F.Mul(m.E.B, tv6)                       //    15. tv5 = B * tv6
+	tv2 = F.Add(tv2, tv5)                         //    16. tv2 = tv2 + tv5
+	x = F.Mul(tv1, tv3)                           //    17.   x = tv1 * tv3
+	isGx1Square, y1 := m.sqrtRatio(tv2, tv6)      //    18. (is_gx1_square, y1) = sqrt_ratio(tv2, tv6)
+	y = F.Mul(tv1, u)                             //    19.   y = tv1 * u
+	y = F.Mul(y, y1)                              //    20.   y = y * y1
+	x = F.CMov(x, tv3, isGx1Square)               //    21.   x = CMOV(x, tv3, is_gx1_square)
+	y = F.CMov(y, y1, isGx1Square)                //    22.   y = CMOV(y, y1, is_gx1_square)
+	e1 := F.Sgn0(u) == F.Sgn0(y)                  //    23.  e1 = sgn0(u) == sgn0(y)
+	y = F.CMov(F.Neg(y), y, e1)                   //    24.   y = CMOV(-y, y, e1)
+	tv4 = F.Inv(tv4)                              //    25.   x = x / tv4
+	x = F.Mul(x, tv4)
+
+	return m.E.NewPoint(x, y)
+}
+
+func (m *sswu) Map2(u GF.Elt) C.Point {
 	F := m.E.F
 	var t1, t2 GF.Elt
 	var x1, x2, gx1, gx2, y2, x, y GF.Elt
