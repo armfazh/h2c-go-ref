@@ -109,37 +109,6 @@ func (m *sswu) Map(u GF.Elt) C.Point {
 	return m.E.NewPoint(x, y)
 }
 
-func (m *sswu) Map2(u GF.Elt) C.Point {
-	F := m.E.F
-	var t1, t2 GF.Elt
-	var x1, x2, gx1, gx2, y2, x, y GF.Elt
-	var e1, e2, e3 bool
-
-	t1 = F.Sqr(u)               // 0.   t1 = u^2
-	t1 = F.Mul(t1, m.Z)         // 1.   t1 = Z * u^2
-	t2 = F.Sqr(t1)              // 2.   t2 = t1^2
-	x1 = F.Add(t1, t2)          // 3.   x1 = t1 + t2
-	x1 = F.Inv0(x1)             // 4.   x1 = inv0(x1)
-	e1 = F.IsZero(x1)           // 5.   e1 = x1 == 0
-	x1 = F.Add(x1, F.One())     // 6.   x1 = x1 + 1
-	x1 = F.CMov(x1, m.c2, e1)   // 7.   x1 = CMOV(x1, c2, e1)
-	x1 = F.Mul(x1, m.c1)        // 8.   x1 = x1 * c1
-	gx1 = F.Sqr(x1)             // 9.  gx1 = x1^2
-	gx1 = F.Add(gx1, m.E.A)     // 10. gx1 = gx1 + A
-	gx1 = F.Mul(gx1, x1)        // 11. gx1 = gx1 * x1
-	gx1 = F.Add(gx1, m.E.B)     // 12. gx1 = gx1 + B
-	x2 = F.Mul(t1, x1)          // 13.  x2 = t1 * x1
-	t2 = F.Mul(t1, t2)          // 14.  t2 = t1 * t2
-	gx2 = F.Mul(gx1, t2)        // 15. gx2 = gx1 * t2
-	e2 = F.IsSquare(gx1)        // 16.  e2 = is_square(gx1)
-	x = F.CMov(x2, x1, e2)      // 17.   x = CMOV(x2, x1, e2)
-	y2 = F.CMov(gx2, gx1, e2)   // 18.  y2 = CMOV(gx2, gx1, e2)
-	y = F.Sqrt(y2)              // 19.   y = sqrt(y2)
-	e3 = F.Sgn0(u) == F.Sgn0(y) // 20.  e3 = sgn0(u) == sgn0(y)
-	y = F.CMov(F.Neg(y), y, e3) // 21.   y = CMOV(-y, y, e3)
-	return m.E.NewPoint(x, y)
-}
-
 type sswuAB0 struct {
 	E   C.W
 	iso C.Isogeny
