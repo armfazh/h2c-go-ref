@@ -18,8 +18,9 @@ This implementation is for reference only. It **MUST NOT** be used in production
 
 **Development branch**: [master](https://github.com/armfazh/h2c-go-ref/tree/master)
 
-#### Draft versions implemented:
+#### Draft versions implemented
  **Latest**: [v14]
+ 
  Previous: [v12], [v10], [v08], [v07], [v06], [v05].
 
  [v14]: https://github.com/armfazh/h2c-go-ref/tree/v14.0.0
