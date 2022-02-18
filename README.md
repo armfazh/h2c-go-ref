@@ -37,4 +37,4 @@ This implementation is for reference only. It **MUST NOT** be used in production
 
 ### Contact
 
-Feel free to open a github issue for anything related to the implementation, otherwise [e-mail](draft-irtf-cfrg-hash-to-curve@ietf.org) authors of the draft.
+Feel free to open a github issue for anything related to the implementation, otherwise [e-mail](mailto:draft-irtf-cfrg-hash-to-curve@ietf.org) authors of the draft.
