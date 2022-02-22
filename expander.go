@@ -4,6 +4,7 @@ import (
 	"crypto"
 	"errors"
 	"io"
+	"math"
 
 	"github.com/armfazh/h2c-go-ref/xof"
 )
@@ -69,6 +70,9 @@ func (e *expanderXOF) constructDSTPrime() (err error) {
 }
 
 func (e *expanderXOF) Expand(msg []byte, n uint) []byte {
+	if n > math.MaxUint16 || len(e.dst) > math.MaxUint8 {
+		panic(errors.New("requested too many bytes"))
+	}
 	bLen := []byte{0, 0}
 	bLen[0] = byte((n >> 8) & 0xFF)
 	bLen[1] = byte(n & 0xFF)
@@ -105,8 +109,8 @@ func (e *expanderXMD) Expand(msg []byte, n uint) []byte {
 	H := e.id.New()
 	bLen := uint(H.Size())
 	ell := (n + (bLen - 1)) / bLen
-	if ell > 255 {
-		panic("too big")
+	if ell > math.MaxUint8 || n > math.MaxUint16 || len(e.dst) > math.MaxUint8 {
+		panic(errors.New("requested too many bytes"))
 	}
 
 	zPad := make([]byte, H.BlockSize())
