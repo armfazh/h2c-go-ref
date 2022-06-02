@@ -20,7 +20,7 @@ This implementation is for reference only. It **MUST NOT** be used in production
 
 #### Draft versions implemented
  **Latest**: [v14]
- 
+
  Previous: [v12], [v10], [v08], [v07], [v06], [v05].
 
  [v14]: https://github.com/armfazh/h2c-go-ref/tree/v14.0.0
@@ -38,7 +38,7 @@ This implementation is for reference only. It **MUST NOT** be used in production
 
 ### Internals
 
-![hash to curve](https://github.com/cfrg/draft-irtf-cfrg-hash-to-curve/blob/master/drawings/diag.png)
+![hash to curve](https://github.com/cfrg/draft-irtf-cfrg-hash-to-curve/blob/main/drawings/diag.png)
 
 ### Contact
 
