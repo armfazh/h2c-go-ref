@@ -1,20 +1,29 @@
-name: Go
-on: [pull_request,push]
+---
+name: h2c-go-ref
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
 jobs:
-
   build:
-    name: Build
+    name: Build Go-${{ matrix.GOVER }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        GOVER: ['1.18', '1.17', '1.16']
     steps:
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
+      - name: Setup Go-${{ matrix.GOVER }}
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.GOVER }}
 
-    - name: Check out
-      uses: actions/checkout@v2
+      - name: Checking out
+        uses: actions/checkout@v3
 
-    - name: Building
-      run: go build -v .
+      - name: Building
+        run: go build -v .
 
-    - name: Testing
-      run: go test -v ./...
+      - name: Testing
+        run: go test -v ./...
