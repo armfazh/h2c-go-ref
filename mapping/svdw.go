@@ -26,7 +26,7 @@ func NewSVDW(e C.EllCurve) MapToCurve {
 func (m *svdw) findZ() {
 	F := m.E.F
 	_Half := F.Inv(F.Neg(F.Elt(2))) // -1/2
-	ctr := F.Generator()
+	ctr := F.One()
 	for {
 		for _, z := range []GF.Elt{ctr, F.Neg(ctr)} {
 			g2 := m.E.EvalRHS(F.Mul(z, _Half)) // g(-z/2)
