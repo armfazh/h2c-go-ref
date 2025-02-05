@@ -1,4 +1,4 @@
-# Hashing to Elliptic Curves
+# RFC9380 - Hashing to Elliptic Curves
 
 ![Go](https://github.com/armfazh/h2c-go-ref/workflows/Go/badge.svg)
 
@@ -6,7 +6,7 @@
 
 **IETF Data Tracker**: [draft-irtf-cfrg-hash-to-curve](https://datatracker.ietf.org/doc/draft-irtf-cfrg-hash-to-curve)
 
-**Internet-Draft**: [git repository](https://github.com/cfrg/draft-irtf-cfrg-hash-to-curve)
+**Internet RFC-9380**: [git repository](https://github.com/cfrg/draft-irtf-cfrg-hash-to-curve)
 
 This document specifies a number of algorithms that may be used to encode or hash an arbitrary string to a point on an elliptic curve.
 
