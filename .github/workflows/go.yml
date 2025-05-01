@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        GOVER: ['1.23', '1.22']
+        GOVER: ['1.24', '1.23']
     steps:
 
       - name: Checking out
