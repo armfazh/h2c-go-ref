@@ -53,7 +53,7 @@ type vectorSuite struct {
 func (v vectorSuite) test(t *testing.T) {
 	hashToCurve, err := h2c.SuiteID(v.SuiteID).Get([]byte(v.DST))
 	if err != nil {
-		t.Skipf(err.Error())
+		t.Skipf("error: %v", err)
 	}
 	hashToScalar := hashToCurve.GetHashToScalar()
 	E := hashToCurve.GetCurve()

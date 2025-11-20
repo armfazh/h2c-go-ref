@@ -44,17 +44,17 @@ func (v expandMsgVector) test(t *testing.T) {
 	}
 	exp, err := expID.Get([]byte(v.DST), v.K)
 	if err != nil {
-		t.Errorf(err.Error())
+		t.Errorf("error %v", err)
 	}
 	for i := range v.Vectors {
 		len, err := strconv.ParseUint(v.Vectors[i].LenInBytes, 0, 32)
 		if err != nil {
-			t.Errorf(err.Error())
+			t.Errorf("error %v", err)
 		}
 		got := exp.Expand([]byte(v.Vectors[i].Msg), uint(len))
 		want, err := hex.DecodeString(v.Vectors[i].UniformBytes)
 		if err != nil {
-			t.Errorf(err.Error())
+			t.Errorf("error %v", err)
 		}
 		if !bytes.Equal(got, want) {
 			t.Fatalf("suite: %v\ngot:  %v\nwant: %v", v.Hash, got, want)
